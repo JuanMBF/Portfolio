@@ -1,0 +1,41 @@
+services:
+  db:
+    image: mysql:8.4
+    environment:
+      MYSQL_DATABASE: helpdesk
+      MYSQL_USER: helpdesk
+      MYSQL_PASSWORD: helpdesk
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - db-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uhelpdesk", "-phelpdesk"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  backend:
+    build: ./backend
+    environment:
+      SPRING_PROFILES_ACTIVE: mysql
+      DB_URL: jdbc:mysql://db:3306/helpdesk?serverTimezone=UTC
+      DB_USERNAME: helpdesk
+      DB_PASSWORD: helpdesk
+      # Cambiar en un entorno real: clave Base64 de al menos 32 bytes.
+      APP_JWT_SECRET: ${APP_JWT_SECRET:-ZG9ja2VyLWNvbXBvc2UtZGVtby1zZWNyZXQtY2hhbmdlLW1lLXBsZWFzZQ==}
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+
+  frontend:
+    build: ./frontend
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "3000:80"
+
+volumes:
+  db-data:

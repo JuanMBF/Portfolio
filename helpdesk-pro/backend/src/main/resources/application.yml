@@ -1,0 +1,50 @@
+spring:
+  application:
+    name: helpdesk-pro
+  datasource:
+    url: jdbc:h2:mem:helpdesk;DB_CLOSE_DELAY=-1;MODE=MySQL
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+  data:
+    web:
+      pageable:
+        max-page-size: 100
+
+server:
+  port: 8080
+  error:
+    include-message: always
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      # /actuator/health/readiness pasa a UP recién cuando la app terminó de arrancar (incluida la carga de datos).
+      probes:
+        enabled: true
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method
+    tags-sorter: alpha
+
+app:
+  jwt:
+    # Solo para desarrollo local. En producción se inyecta con la variable APP_JWT_SECRET.
+    secret: ${APP_JWT_SECRET:ZGV2LW9ubHktc2VjcmV0LWNoYW5nZS1tZS1oZWxwZGVzay1wcm8tMjAyNi1qd3Q=}
+    expiration-minutes: ${APP_JWT_EXPIRATION_MINUTES:480}
+  cors:
+    allowed-origins: ${APP_CORS_ALLOWED_ORIGINS:http://localhost:5173}
+  seed:
+    enabled: ${APP_SEED_ENABLED:true}
