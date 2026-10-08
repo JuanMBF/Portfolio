@@ -1,0 +1,19 @@
+# Generales
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.log
+
+# Java
+target/
+
+# Node
+node_modules/
+dist/
+
+# Python
+__pycache__/
+*.egg-info/
+.pytest_cache/
+.venv/

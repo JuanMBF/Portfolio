@@ -1,0 +1,35 @@
+name: IT Support Toolkit
+
+on:
+  push:
+    paths: ["it-support-toolkit/**", ".github/workflows/it-support-toolkit.yml"]
+  pull_request:
+    paths: ["it-support-toolkit/**", ".github/workflows/it-support-toolkit.yml"]
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Python ${{ matrix.python }} en ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python: ["3.10", "3.13"]
+    defaults:
+      run:
+        working-directory: it-support-toolkit
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - run: pip install -e ".[dev]"
+      - run: python -m pytest -q
+      - name: La CLI corre en este sistema operativo
+        # El código de salida puede ser 1 si el runner tiene el disco casi lleno: lo que se valida es el JSON.
+        run: |
+          ittk --version
+          ittk sysinfo --json > sysinfo.json || true
+          python -c "import json; d = json.load(open('sysinfo.json', encoding='utf-8')); print(d['system']['os'], '-', len(d['findings']), 'hallazgos')"
+        shell: bash
