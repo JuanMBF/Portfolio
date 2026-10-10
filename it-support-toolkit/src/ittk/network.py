@@ -106,16 +106,26 @@ def parse_ports(text: str) -> list[int]:
     ports: set[int] = set()
     for part in filter(None, (p.strip() for p in text.split(","))):
         if "-" in part:
-            start, end = (int(x) for x in part.split("-", 1))
+            start, end = (_port_number(x, part) for x in part.split("-", 1))
             if end < start or end - start > 1024:
                 raise ValueError(f"Rango inválido: {part} (máximo 1024 puertos por rango)")
             ports.update(range(start, end + 1))
         else:
-            ports.add(int(part))
+            ports.add(_port_number(part, part))
+    if not ports:
+        raise ValueError("No se indicó ningún puerto (ej.: 22,80,8000-8010)")
     invalid = [p for p in ports if not 1 <= p <= 65535]
     if invalid:
         raise ValueError(f"Puertos fuera de rango: {invalid}")
     return sorted(ports)
+
+
+def _port_number(text: str, part: str) -> int:
+    # isascii: isdigit() solo también acepta caracteres como "²", que int() rechaza.
+    text = text.strip()
+    if not (text.isascii() and text.isdigit()):
+        raise ValueError(f"Puerto inválido: '{part}' (se espera un número o un rango, ej.: 22,80,8000-8010)")
+    return int(text)
 
 
 def check_ports(host: str, ports: list[int], timeout: float = 1.0) -> list[CheckResult]:

@@ -34,6 +34,18 @@ def test_parse_ports_rejects_invalid_input(text):
         network.parse_ports(text)
 
 
+@pytest.mark.parametrize("text", ["http", "22,http", "80-", "-80", "80-90-100", "²"])
+def test_parse_ports_names_the_part_that_is_not_a_port(text):
+    with pytest.raises(ValueError, match="Puerto inválido: '" + text.split(",")[-1]):
+        network.parse_ports(text)
+
+
+@pytest.mark.parametrize("text", ["", " ", ",", " , "])
+def test_parse_ports_rejects_an_empty_list(text):
+    with pytest.raises(ValueError, match="ningún puerto"):
+        network.parse_ports(text)
+
+
 def test_check_tcp_reports_open_port(monkeypatch):
     class FakeSocket:
         def __enter__(self):
