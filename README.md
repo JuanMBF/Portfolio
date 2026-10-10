@@ -71,6 +71,13 @@ Diagnóstico
 - **Stack:** Python, psutil, argparse y la librería estándar (sockets, urllib, concurrent.futures).
 - 42 tests y CI configurado para Windows, Linux y macOS → [ver proyecto](it-support-toolkit)
 
+### Más proyectos en otros repositorios
+
+| Proyecto | Qué es | Stack |
+|---|---|---|
+| [ProyectoDB](https://github.com/JuanMBF/ProyectoDB) | Scraper de precios de Coto, Día y Carrefour: guarda el historial en MySQL, archiva las respuestas crudas en un replica set de MongoDB y compara precios con SQL (vistas con *window functions*). | Python · MySQL · MongoDB · SQLAlchemy · Alembic |
+| [HelpDesk Pro en Python](https://github.com/JuanMBF/python) | Sistema de tickets de soporte IT con API REST, autenticación JWT, SLA por prioridad y panel de métricas. | Python · FastAPI · SQLAlchemy · Streamlit · pytest |
+
 ---
 
 ## Tecnologías
@@ -78,9 +85,9 @@ Diagnóstico
 | Área | Tecnologías |
 |---|---|
 | Lenguajes | Java · JavaScript · Python · SQL |
-| Backend | Spring Boot · Spring Security · JPA/Hibernate · API REST · JWT |
+| Backend | Spring Boot · Spring Security · JPA/Hibernate · FastAPI · SQLAlchemy · API REST · JWT |
 | Frontend | React · Vite · HTML · CSS |
-| Bases de datos | MySQL · MongoDB (replica sets) · H2 |
+| Bases de datos | MySQL · MongoDB (replica sets) · SQLite · H2 |
 | Testing | JUnit 5 · MockMvc · Vitest · Testing Library · pytest |
 | DevOps | Docker · Docker Compose · GitHub Actions · nginx · Git |
 | Soporte IT | Diagnóstico de redes (DNS, TCP, HTTP) · relevamiento de equipos · gestión de incidencias y SLA |
