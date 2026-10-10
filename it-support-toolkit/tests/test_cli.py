@@ -97,6 +97,12 @@ def test_ports_rejects_bad_input(capsys):
     assert "fuera de rango" in capsys.readouterr().err
 
 
+def test_ports_without_any_port_is_an_error_not_a_crash(capsys):
+    # Antes llegaba a imprimir la tabla vacía y fallaba con "max() iterable argument is empty".
+    assert cli.main(["ports", "localhost", "--ports", ","]) == 2
+    assert "ningún puerto" in capsys.readouterr().err
+
+
 def test_format_due_handles_api_timestamps():
     assert cli.format_due("2026-10-09T02:49:41.542147213Z") == "09/10/2026 02:49 UTC"
     assert cli.format_due("no-es-fecha") == "no-es-fecha"
