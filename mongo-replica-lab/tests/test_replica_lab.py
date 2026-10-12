@@ -85,3 +85,22 @@ def test_cli_defaults():
     assert args.count == 10_000
     assert args.batch == 1_000
     assert build_parser().parse_args(["failover"]).mode == "external"
+
+
+@pytest.mark.parametrize(
+    ("argv", "message"),
+    [
+        (["load", "--batch", "0"], "mayor que cero"),
+        (["load", "--batch", "-1"], "mayor que cero"),
+        (["load", "--count", "0"], "mayor que cero"),
+        (["load", "--count", "-5"], "mayor que cero"),
+        (["load", "--count", "mil"], "no es un número entero"),
+    ],
+)
+def test_load_rejects_sizes_that_are_not_positive(argv, message, capsys):
+    # Con --batch 0 el comando borraba la colección y recién después fallaba al armar los lotes.
+    with pytest.raises(SystemExit) as exit_info:
+        build_parser().parse_args(argv)
+
+    assert exit_info.value.code == 2
+    assert message in capsys.readouterr().err
