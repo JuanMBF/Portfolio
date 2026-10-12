@@ -347,6 +347,17 @@ def cmd_failover(lab: Lab, args) -> int:
 # --------------------------------------------------------------------------- CLI
 
 
+def positive_int(text: str) -> int:
+    """Tipo de argparse: un entero mayor que cero, validado antes de tocar la base."""
+    try:
+        value = int(text)
+    except ValueError:
+        raise argparse.ArgumentTypeError(f"'{text}' no es un número entero") from None
+    if value < 1:
+        raise argparse.ArgumentTypeError(f"tiene que ser mayor que cero (se recibió {value})")
+    return value
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Laboratorio de replicación de MongoDB")
     parser.add_argument("--replica-set", default=os.environ.get("MONGO_REPLICA_SET", "rs0"))
@@ -355,8 +366,8 @@ def build_parser() -> argparse.ArgumentParser:
     sub.add_parser("status", help="estado del replica set")
 
     load = sub.add_parser("load", help="carga documentos y verifica la replicación")
-    load.add_argument("--count", type=int, default=10_000)
-    load.add_argument("--batch", type=int, default=1_000)
+    load.add_argument("--count", type=positive_int, default=10_000)
+    load.add_argument("--batch", type=positive_int, default=1_000)
     load.add_argument("--run-id")
     load.add_argument("--keep", action="store_true", help="no borrar los datos anteriores")
     load.add_argument("--wait", type=float, default=30, help="segundos máximos para esperar la replicación")
