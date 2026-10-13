@@ -11,7 +11,9 @@ export function parseBlocks(text) {
   let current = null;
 
   const flush = () => {
-    if (current) blocks.push(current);
+    // Una fila separadora suelta ("|---|") deja una tabla sin filas: no hay nada para mostrar.
+    const emptyTable = current?.type === 'table' && current.rows.length === 0;
+    if (current && !emptyTable) blocks.push(current);
     current = null;
   };
 

@@ -27,6 +27,17 @@ describe('Markdown', () => {
     ]);
   });
 
+  it('no se rompe con una fila separadora suelta, sin tabla', () => {
+    // Antes generaba una tabla sin filas y el render fallaba, dejando en blanco el detalle del ticket.
+    const text = 'Antes del corte\n|---|---|\n\nDespués del corte';
+
+    expect(parseBlocks(text).map((b) => b.type)).toEqual(['paragraph', 'paragraph']);
+
+    const { container } = render(<Markdown text={text} />);
+    expect(container.querySelector('table')).toBeNull();
+    expect(screen.getByText('Después del corte')).toBeInTheDocument();
+  });
+
   it('renderiza títulos, listas, negritas y tablas', () => {
     render(<Markdown text={REPORT} />);
 
