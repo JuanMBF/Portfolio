@@ -38,6 +38,15 @@ def test_report_writes_html_file(offline, tmp_path):
     assert "Diagnóstico de pc-aula-204" in output.read_text(encoding="utf-8")
 
 
+@pytest.mark.parametrize("target", ["no-existe/reporte.md", "."])
+def test_report_to_an_unwritable_path_is_an_error_not_a_crash(offline, tmp_path, capsys, target):
+    # Una carpeta inexistente o una carpeta en lugar de un archivo terminaban en un traceback de OSError.
+    output = tmp_path / target
+
+    assert cli.main(["report", "-o", str(output)]) == 2
+    assert f"No se pudo guardar el reporte en {output}" in capsys.readouterr().err
+
+
 def test_report_hides_ok_findings_when_there_are_problems(offline, system_info):
     offline["info"] = system_info(memory_percent=97.0)
 

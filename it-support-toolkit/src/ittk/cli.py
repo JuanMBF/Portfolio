@@ -136,7 +136,11 @@ def cmd_report(args) -> int:
         output = f"reporte-{report.system.hostname}-{datetime.now():%Y%m%d-%H%M}.html"
 
     if output:
-        Path(output).write_text(content, encoding="utf-8")
+        try:
+            Path(output).write_text(content, encoding="utf-8")
+        except OSError as error:  # carpeta inexistente, una carpeta en vez de un archivo, sin permisos...
+            print(f"Error: No se pudo guardar el reporte en {output}: {error.strerror or error}", file=sys.stderr)
+            return 2
         print(f"Reporte guardado en {output}")
     else:
         print(content)
