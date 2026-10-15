@@ -112,6 +112,31 @@ def test_ports_without_any_port_is_an_error_not_a_crash(capsys):
     assert "ningún puerto" in capsys.readouterr().err
 
 
+@pytest.mark.parametrize("timeout", ["-1", "0", "inf", "nan", "61", "rápido"])
+def test_ports_rejects_a_bad_timeout_before_scanning(monkeypatch, capsys, timeout):
+    # -1, inf y nan terminaban en un traceback del socket; con 0 todos los puertos daban cerrados.
+    monkeypatch.setattr(network, "check_ports", lambda *args: pytest.fail("no debería escanear"))
+
+    with pytest.raises(SystemExit) as exit_info:
+        cli.main(["ports", "localhost", "--ports", "22", "--timeout", timeout])
+
+    assert exit_info.value.code == 2
+    assert "--timeout" in capsys.readouterr().err
+
+
+def test_ports_accepts_a_fractional_timeout(monkeypatch, capsys):
+    received = {}
+
+    def fake_check_ports(host, ports, timeout):
+        received["timeout"] = timeout
+        return [network.CheckResult("SSH", f"{host}:22", True, 1.0, "conexión aceptada")]
+
+    monkeypatch.setattr(network, "check_ports", fake_check_ports)
+
+    assert cli.main(["ports", "localhost", "--ports", "22", "--timeout", "0.5"]) == 0
+    assert received["timeout"] == 0.5
+
+
 def test_format_due_handles_api_timestamps():
     assert cli.format_due("2026-10-09T02:49:41.542147213Z") == "09/10/2026 02:49 UTC"
     assert cli.format_due("no-es-fecha") == "no-es-fecha"

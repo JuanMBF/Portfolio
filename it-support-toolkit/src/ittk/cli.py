@@ -196,6 +196,20 @@ def _findings_json(findings: list[Finding]) -> list[dict]:
 # --------------------------------------------------------------------------- parser
 
 
+MAX_TIMEOUT = 60
+
+
+def timeout_seconds(text: str) -> float:
+    """Segundos de espera por puerto: con 0 todos daban cerrados, y con -1, inf o nan el socket fallaba."""
+    try:
+        value = float(text)
+    except ValueError:
+        raise argparse.ArgumentTypeError(f"'{text}' no es un número de segundos") from None
+    if not 0 < value <= MAX_TIMEOUT:  # también descarta nan, que no es comparable
+        raise argparse.ArgumentTypeError(f"debe ser mayor que 0 y como máximo {MAX_TIMEOUT} segundos")
+    return value
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="ittk",
@@ -217,7 +231,7 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("host")
     p.add_argument("--ports", default=",".join(map(str, network.DEFAULT_PORTS)),
                    help="lista separada por comas, admite rangos (ej.: 22,80,8000-8010)")
-    p.add_argument("--timeout", type=float, default=1.0)
+    p.add_argument("--timeout", type=timeout_seconds, default=1.0, help="segundos de espera por puerto (máx. 60)")
     p.set_defaults(func=cmd_ports)
 
     p = sub.add_parser("report", help="genera un reporte completo para adjuntar a un ticket")
