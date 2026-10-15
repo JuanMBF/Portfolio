@@ -389,7 +389,16 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
-    lab = Lab(hosts_from_env(), args.replica_set)
+    hosts = hosts_from_env()
+    if not hosts:
+        print(f"MONGO_HOSTS no tiene ningún host. Ejemplo: MONGO_HOSTS={DEFAULT_HOSTS}", file=sys.stderr)
+        return 2
+    try:
+        lab = Lab(hosts, args.replica_set)
+    except (PyMongoError, ValueError) as error:
+        # MongoClient valida la URI al crearse, antes de conectar: un puerto mal escrito cae acá.
+        print(f"MONGO_HOSTS inválido ({','.join(hosts)}): {error}", file=sys.stderr)
+        return 2
     commands = {
         "status": cmd_status,
         "primary": cmd_primary,

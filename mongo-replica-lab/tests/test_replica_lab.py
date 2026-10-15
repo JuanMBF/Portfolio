@@ -9,6 +9,7 @@ from replica_lab import (
     fingerprint,
     format_table,
     generate_events,
+    main,
     replica_set_uri,
     replication_lag_seconds,
 )
@@ -103,4 +104,21 @@ def test_load_rejects_sizes_that_are_not_positive(argv, message, capsys):
         build_parser().parse_args(argv)
 
     assert exit_info.value.code == 2
+    assert message in capsys.readouterr().err
+
+
+@pytest.mark.parametrize(
+    ("hosts", "message"),
+    [
+        ("", "no tiene ningún host"),
+        (" , ", "no tiene ningún host"),
+        ("mongo1:abc", "MONGO_HOSTS inválido (mongo1:abc)"),
+        ("mongo1:99999", "MONGO_HOSTS inválido (mongo1:99999)"),
+    ],
+)
+def test_bad_mongo_hosts_give_a_clear_error(hosts, message, monkeypatch, capsys):
+    # El cliente se creaba fuera del manejo de errores: esto terminaba en un traceback de pymongo.
+    monkeypatch.setenv("MONGO_HOSTS", hosts)
+
+    assert main(["status"]) == 2
     assert message in capsys.readouterr().err
