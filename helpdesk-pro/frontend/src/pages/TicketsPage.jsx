@@ -57,11 +57,20 @@ export default function TicketsPage() {
     setError(null);
     ticketsApi
       .search(query)
-      .then((data) => !cancelled && setResult(data))
+      .then((data) => {
+        if (cancelled) return;
+        // La página de la URL ya no existe (se cerraron tickets o es un link viejo): vamos a la última.
+        if (data.content.length === 0 && data.totalPages > 0 && data.page >= data.totalPages) {
+          updateParam('page', data.totalPages - 1);
+          return;
+        }
+        setResult(data);
+      })
       .catch((err) => !cancelled && setError(err));
     return () => {
       cancelled = true;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [queryString]);
 
   function updateParam(key, value) {
