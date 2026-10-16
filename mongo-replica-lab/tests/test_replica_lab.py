@@ -108,6 +108,34 @@ def test_load_rejects_sizes_that_are_not_positive(argv, message, capsys):
 
 
 @pytest.mark.parametrize(
+    ("argv", "message"),
+    [
+        (["failover", "--interval", "-0.1"], "0 o más segundos"),
+        (["failover", "--interval", "nan"], "0 o más segundos"),
+        (["failover", "--warmup", "-1"], "0 o más segundos"),
+        (["failover", "--cooldown", "inf"], "0 o más segundos"),
+        (["failover", "--timeout", "-60"], "0 o más segundos"),
+        (["load", "--wait", "-5"], "0 o más segundos"),
+        (["verify", "--wait", "diez"], "no es un número"),
+    ],
+)
+def test_seconds_options_reject_negative_and_non_finite_values(argv, message, capsys):
+    # Con --interval negativo, time.sleep() mataba al hilo que escribe después de la primera escritura
+    # y el failover igual informaba "ninguna escritura confirmada se perdió".
+    with pytest.raises(SystemExit) as exit_info:
+        build_parser().parse_args(argv)
+
+    assert exit_info.value.code == 2
+    assert message in capsys.readouterr().err
+
+
+def test_seconds_options_accept_zero_and_decimals():
+    args = build_parser().parse_args(["failover", "--interval", "0", "--warmup", "0.5"])
+
+    assert (args.interval, args.warmup) == (0.0, 0.5)
+
+
+@pytest.mark.parametrize(
     ("hosts", "message"),
     [
         ("", "no tiene ningún host"),

@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import math
 import os
 import random
 import sys
@@ -358,6 +359,21 @@ def positive_int(text: str) -> int:
     return value
 
 
+def seconds(text: str) -> float:
+    """Tipo de argparse: una cantidad de segundos finita y no negativa.
+
+    time.sleep() rechaza un valor negativo o "nan": en failover eso mataba al hilo que escribe después de
+    la primera escritura, y el informe igual decía que no se había perdido nada.
+    """
+    try:
+        value = float(text)
+    except ValueError:
+        raise argparse.ArgumentTypeError(f"'{text}' no es un número") from None
+    if not math.isfinite(value) or value < 0:
+        raise argparse.ArgumentTypeError(f"tiene que ser 0 o más segundos (se recibió {text})")
+    return value
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Laboratorio de replicación de MongoDB")
     parser.add_argument("--replica-set", default=os.environ.get("MONGO_REPLICA_SET", "rs0"))
@@ -370,20 +386,20 @@ def build_parser() -> argparse.ArgumentParser:
     load.add_argument("--batch", type=positive_int, default=1_000)
     load.add_argument("--run-id")
     load.add_argument("--keep", action="store_true", help="no borrar los datos anteriores")
-    load.add_argument("--wait", type=float, default=30, help="segundos máximos para esperar la replicación")
+    load.add_argument("--wait", type=seconds, default=30, help="segundos máximos para esperar la replicación")
 
     verify = sub.add_parser("verify", help="compara los datos entre nodos")
     verify.add_argument("--run-id")
-    verify.add_argument("--wait", type=float, default=10)
+    verify.add_argument("--wait", type=seconds, default=10)
 
     sub.add_parser("primary", help="imprime el host del primario actual")
 
     failover = sub.add_parser("failover", help="mide la recuperación ante la caída del primario")
     failover.add_argument("--mode", choices=["external", "stepdown"], default="external")
-    failover.add_argument("--interval", type=float, default=0.02, help="segundos entre escrituras")
-    failover.add_argument("--warmup", type=float, default=2)
-    failover.add_argument("--cooldown", type=float, default=3)
-    failover.add_argument("--timeout", type=float, default=60)
+    failover.add_argument("--interval", type=seconds, default=0.02, help="segundos entre escrituras")
+    failover.add_argument("--warmup", type=seconds, default=2)
+    failover.add_argument("--cooldown", type=seconds, default=3)
+    failover.add_argument("--timeout", type=seconds, default=60)
     return parser
 
 
