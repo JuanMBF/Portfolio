@@ -9,7 +9,7 @@ Está inspirado en mi experiencia en la mesa de ayuda de la Universidad Nacional
 ![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=black)
 ![MySQL](https://img.shields.io/badge/MySQL-8.4-4479A1?logo=mysql&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white)
-![Tests](https://img.shields.io/badge/tests-96_pasando-success)
+![Tests](https://img.shields.io/badge/tests-101_pasando-success)
 
 ![Dashboard](docs/screenshots/dashboard.png)
 
@@ -162,8 +162,8 @@ curl -s "localhost:8080/api/tickets?status=OPEN&priority=HIGH" -H "Authorization
 ## Tests
 
 ```bash
-cd backend && ./mvnw verify    # 68 tests: unitarios + integración con MockMvc y H2
-cd frontend && npm test        # 28 tests: utilidades, componentes, Markdown y login con Vitest + Testing Library
+cd backend && ./mvnw verify    # 70 tests: unitarios + integración con MockMvc y H2
+cd frontend && npm test        # 31 tests: utilidades, componentes, Markdown y login con Vitest + Testing Library
 ```
 
 Los tests de integración levantan la aplicación completa y verifican, entre otras cosas:

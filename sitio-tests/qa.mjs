@@ -85,11 +85,9 @@ async function revisar(ruta, ancho, tema) {
   );
   if (anclas.length) fallar(`${nombre}: anclas sin destino: ${anclas.join(", ")}`);
 
-  if (ancho !== 768) {
-    await pagina.addScriptTag({ content: axe });
-    const r = await pagina.evaluate(() => window.axe.run(document, { runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21aa"] } }));
-    for (const v of r.violations) fallar(`${nombre}: axe ${v.id} (${v.impact}): ${v.nodes[0].target.join(" ")}`);
-  }
+  await pagina.addScriptTag({ content: axe });
+  const r = await pagina.evaluate(() => window.axe.run(document, { runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21aa"] } }));
+  for (const v of r.violations) fallar(`${nombre}: axe ${v.id} (${v.impact}): ${v.nodes[0].target.join(" ")}`);
   const relevantes = errores.filter((e) => !(ruta === "no-existe/" && e.includes("404")));
   if (relevantes.length) fallar(`${nombre}: errores de consola: ${relevantes.join(" | ")}`);
 
