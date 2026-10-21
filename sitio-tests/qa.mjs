@@ -55,14 +55,29 @@ async function revisar(ruta, ancho, tema) {
   pagina.on("console", (m) => m.type() === "error" && errores.push(m.text()));
   pagina.on("pageerror", (e) => errores.push(e.message));
   await pagina.goto(origen + BASE + ruta, { waitUntil: "networkidle" });
+  // QA_FUENTE="DejaVu Sans" reproduce las fuentes más anchas de los runners de Ubuntu.
+  if (process.env.QA_FUENTE) {
+    await pagina.addStyleTag({ content: `*{font-family:"${process.env.QA_FUENTE}"!important}` });
+  }
   // Las imágenes con loading="lazy" se cargan al recorrer la página.
   await pagina.evaluate(async () => {
     for (const img of document.images) img.loading = "eager";
     await Promise.all([...document.images].map((i) => i.decode().catch(() => null)));
   });
 
-  const exceso = await pagina.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
-  if (exceso > 1) fallar(`${nombre}: scroll horizontal de ${exceso}px`);
+  const desborde = await pagina.evaluate(() => {
+    const exceso = document.documentElement.scrollWidth - window.innerWidth;
+    // El primer elemento que se pasa del borde sin un contenedor con scroll propio.
+    const culpable = [...document.querySelectorAll("body *")].find((e) => {
+      if (e.getBoundingClientRect().right <= window.innerWidth + 1) return false;
+      for (let a = e.parentElement; a && a !== document.body; a = a.parentElement) {
+        if (getComputedStyle(a).overflowX !== "visible") return false;
+      }
+      return true;
+    });
+    return { exceso, culpable: culpable ? `${culpable.tagName.toLowerCase()}.${culpable.className}` : "" };
+  });
+  if (desborde.exceso > 1) fallar(`${nombre}: scroll horizontal de ${desborde.exceso}px (${desborde.culpable})`);
   const rotas = await pagina.$$eval("img", (imgs) => imgs.filter((i) => !i.naturalWidth).map((i) => i.src));
   if (rotas.length) fallar(`${nombre}: imágenes que no cargan: ${rotas.join(", ")}`);
   const anclas = await pagina.$$eval('a[href^="#"]', (as) =>
