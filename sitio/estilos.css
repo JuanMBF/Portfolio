@@ -123,7 +123,10 @@ main { display: block; outline: none; }
 .nav a:hover { background: var(--superficie-2); color: var(--texto); }
 @media (max-width: 480px) {
   .marca span:last-child { display: none; }
-  .nav a { padding: 0.45rem 0.45rem; font-size: 0.9rem; }
+  .cabecera__fila { gap: 0.35rem; }
+  .nav { min-width: 0; }
+  .nav a { padding: 0.45rem 0.35rem; font-size: 0.875rem; }
+  .tema-boton { width: 40px; height: 40px; }
 }
 .tema-boton {
   display: inline-grid; place-items: center; width: 44px; height: 44px; padding: 0; flex: none;
