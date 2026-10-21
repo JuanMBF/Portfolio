@@ -56,6 +56,32 @@ class AuthIntegrationTest extends IntegrationTestSupport {
     }
 
     @Test
+    void registerRejectsPasswordLongerThanBcryptAccepts() throws Exception {
+        // 37 caracteres pero 74 bytes: BCrypt ignoraba lo que pasaba de 72 y entraba cualquier
+        // contraseña que empezara con las mismas 36 eñes.
+        mockMvc.perform(post("/api/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json(Map.of(
+                                "fullName", "Nueva Persona",
+                                "email", "nueva@test.dev",
+                                "password", "ñ".repeat(37)))))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errors.password").value(
+                        "La contraseña es demasiado larga (la ñ y las letras con acento ocupan el doble)"));
+    }
+
+    @Test
+    void registerAcceptsPasswordOfExactlyBcryptLimit() throws Exception {
+        mockMvc.perform(post("/api/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json(Map.of(
+                                "fullName", "Nueva Persona",
+                                "email", "nueva@test.dev",
+                                "password", "ñ".repeat(36)))))
+                .andExpect(status().isCreated());
+    }
+
+    @Test
     void loginReturnsTokenThatAuthenticatesRequests() throws Exception {
         createUser("Ana Gomez", Role.AGENT);
 
