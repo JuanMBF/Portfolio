@@ -5,7 +5,7 @@ Herramienta de línea de comandos para **mesa de ayuda**: en segundos releva el 
 La idea es que el técnico reciba desde el primer momento la información que normalmente tiene que pedir (qué equipo es, cómo están sus recursos y qué falla en la red) sin depender de que el usuario la sepa describir.
 
 ![Python](https://img.shields.io/badge/Python-3.10+-3776AB?logo=python&logoColor=white)
-![Tests](https://img.shields.io/badge/tests-42_pasando-success)
+![Tests](https://img.shields.io/badge/tests-62_pasando-success)
 ![Plataformas](https://img.shields.io/badge/Windows_|_Linux_|_macOS-grey)
 
 ## Comandos
@@ -125,4 +125,4 @@ pip install -e ".[dev]"
 python -m pytest -q
 ```
 
-42 tests cubren las reglas de diagnóstico, el parseo de puertos, los errores de socket, los tres formatos de reporte, el cliente de la API (con `urlopen` simulado) y la CLI de punta a punta. Ningún test depende de la red.
+62 tests cubren las reglas de diagnóstico, el parseo de puertos, los errores de socket, los tres formatos de reporte, el cliente de la API (con `urlopen` simulado) y la CLI de punta a punta. Ningún test depende de la red.

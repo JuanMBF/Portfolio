@@ -230,7 +230,7 @@ main { display: block; outline: none; }
 .pie p { margin: 0; }
 
 /* 404 */
-.error-404 { padding: 5rem 0 2rem; }
+.error-404 { padding-top: 5rem; padding-bottom: 2rem; }
 
 @media print {
   .cabecera, .tema-boton, .acciones, .saltar { display: none; }

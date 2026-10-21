@@ -51,7 +51,7 @@ Sistema de tickets de soporte IT con **SLA por prioridad**, **roles** (usuario, 
 
 - **Backend:** Java 21, Spring Boot 3, Spring Security con JWT, JPA/Hibernate, MySQL, OpenAPI/Swagger.
 - **Frontend:** React 18, Vite y React Router, con componentes y gráficos propios, modo oscuro y diseño responsive.
-- **Calidad:** 96 tests (JUnit + MockMvc, Vitest + Testing Library), errores con formato RFC 7807 y bloqueo optimista.
+- **Calidad:** 101 tests (JUnit + MockMvc, Vitest + Testing Library), errores con formato RFC 7807 y bloqueo optimista.
 - **Infraestructura:** Docker Compose (MySQL + API + nginx) y CI que levanta el stack completo en cada push.
 
 `docker compose up --build` y entrás con un clic usando las cuentas de demo → [ver proyecto](helpdesk-pro)
@@ -60,7 +60,7 @@ Sistema de tickets de soporte IT con **SLA por prioridad**, **roles** (usuario, 
 
 Replica set de 3 nodos en Docker con herramientas en Python que **replican 10.000 registros**, verifican con una huella (hash) que todos los nodos tengan exactamente los mismos datos y **matan el nodo primario mientras una aplicación escribe** para medir la recuperación.
 
-| Escenario | Tiempo hasta nuevo primario | Corte visto por la app | Escrituras confirmadas perdidas |
+| Escenario | Nuevo primario (desde que se detecta la caída) | Corte visto por la app | Escrituras confirmadas perdidas |
 |---|---|---|---|
 | Caída abrupta (`docker compose kill`) | 7,99 s | 10,05 s | **0** |
 | Cambio planificado (`replSetStepDown`) | 0,15 s | 0,05 s | **0** |
@@ -86,7 +86,7 @@ Diagnóstico
 ```
 
 - **Stack:** Python, psutil, argparse y la librería estándar (sockets, urllib, concurrent.futures).
-- 42 tests y CI configurado para Windows, Linux y macOS → [ver proyecto](it-support-toolkit)
+- 62 tests y CI configurado para Windows, Linux y macOS → [ver proyecto](it-support-toolkit)
 
 ### Más proyectos en otros repositorios
 
@@ -101,7 +101,7 @@ Diagnóstico
 
 | Área | Tecnologías |
 |---|---|
-| Datos | SQL (CTEs, window functions) · Python · pandas · Excel avanzado (tablas dinámicas, macros) · QA de datos |
+| Datos | SQL (CTEs, window functions) · Python · pandas · Excel avanzado · QA de datos |
 | Lenguajes | Python · SQL · JavaScript · Java |
 | Backend | Spring Boot · Spring Security · JPA/Hibernate · FastAPI · SQLAlchemy · API REST · JWT |
 | Frontend | React · Vite · HTML · CSS |
@@ -112,7 +112,7 @@ Diagnóstico
 
 ## Sitio del portfolio
 
-La carpeta [`sitio/`](sitio) es el sitio publicado en [juanmbf.github.io/Portfolio](https://juanmbf.github.io/Portfolio/): HTML y CSS hechos a mano, modo claro y oscuro, sin cookies ni rastreadores. En cada cambio, [`sitio.yml`](.github/workflows/sitio.yml) valida el HTML y corre una auditoría de accesibilidad con Playwright + axe en 375, 768 y 1280 px (claro y oscuro) antes de publicarlo en la rama `gh-pages`.
+La carpeta [`sitio/`](sitio) es el sitio publicado en [juanmbf.github.io/Portfolio](https://juanmbf.github.io/Portfolio/): HTML y CSS sin frameworks, modo claro y oscuro, sin cookies ni rastreadores. En cada cambio, [`sitio.yml`](.github/workflows/sitio.yml) valida el HTML y corre una auditoría de accesibilidad con Playwright + axe en 375, 768 y 1280 px (claro y oscuro) antes de publicarlo en la rama `gh-pages`.
 
 ```bash
 cd sitio-tests && npm ci && npx playwright install chromium
