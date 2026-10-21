@@ -162,8 +162,8 @@ curl -s "localhost:8080/api/tickets?status=OPEN&priority=HIGH" -H "Authorization
 ## Tests
 
 ```bash
-cd backend && ./mvnw verify    # 70 tests: unitarios + integración con MockMvc y H2
-cd frontend && npm test        # 31 tests: utilidades, componentes, Markdown y login con Vitest + Testing Library
+(cd backend && ./mvnw verify)                 # 70 tests: unitarios + integración con MockMvc y H2
+(cd frontend && npm install && npm test)      # 31 tests: utilidades, componentes, Markdown y login con Vitest + Testing Library
 ```
 
 Los tests de integración levantan la aplicación completa y verifican, entre otras cosas:

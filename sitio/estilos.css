@@ -125,14 +125,16 @@ main { display: block; outline: none; }
   .marca span:last-child { display: none; }
   .cabecera__fila { gap: 0.35rem; }
   .nav { min-width: 0; }
-  .nav a { padding: 0.45rem 0.35rem; font-size: 0.875rem; }
-  .tema-boton { width: 40px; height: 40px; }
 }
 .tema-boton {
   display: inline-grid; place-items: center; width: 44px; height: 44px; padding: 0; flex: none;
   border: 1px solid var(--borde); border-radius: 10px; background: var(--superficie); color: var(--texto); cursor: pointer;
 }
 .tema-boton svg { width: 22px; height: 22px; }
+@media (max-width: 480px) {
+  .tema-boton { width: 40px; height: 40px; }
+  .nav a { padding: 0.45rem 0.25rem; font-size: 0.8125rem; }
+}
 .icono-luna { display: none; }
 :root[data-theme="dark"] .icono-sol { display: none; }
 :root[data-theme="dark"] .icono-luna { display: block; }
