@@ -1,0 +1,17 @@
+{
+  "name": "portfolio-sitio-tests",
+  "private": true,
+  "description": "QA del sitio del portfolio: validación HTML, Playwright + axe y generación de imágenes.",
+  "type": "module",
+  "scripts": {
+    "validar-html": "html-validate --config .htmlvalidate.json ../sitio/index.html ../sitio/404.html",
+    "qa": "node qa.mjs",
+    "capturas": "node qa.mjs --capturas",
+    "imagenes": "node imagenes.mjs"
+  },
+  "devDependencies": {
+    "axe-core": "4.10.3",
+    "html-validate": "9.5.0",
+    "playwright": "1.56.1"
+  }
+}

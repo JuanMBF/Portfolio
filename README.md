@@ -2,13 +2,16 @@
 
 # Juan Barros
 
-**Soporte IT · Desarrollo de Software**
+**Analista de Datos Trainee/Junior · SQL · Python · Excel · QA de datos**
 
 Estudiante de la Tecnicatura en Desarrollo de Software y de la Licenciatura en Gestión de Tecnología de la Información (UADE).
-Experiencia en mesa de ayuda universitaria y en desarrollo full stack con Java, Spring Boot y React.
+Experiencia en soporte técnico y mesa de ayuda universitaria, y en ventas.
 
-Caballito, CABA · Modalidad presencial, híbrida o remota · [juanmbarrosf@gmail.com](mailto:juanmbarrosf@gmail.com)
+Caballito, CABA · Modalidad presencial, híbrida o remota · [juanmbarrosf@gmail.com](mailto:juanmbarrosf@gmail.com) · [LinkedIn](https://www.linkedin.com/in/barrosjuan0)
 
+### 🌐 [juanmbf.github.io/Portfolio](https://juanmbf.github.io/Portfolio/)
+
+[![Sitio](https://github.com/JuanMBF/Portfolio/actions/workflows/sitio.yml/badge.svg)](https://github.com/JuanMBF/Portfolio/actions/workflows/sitio.yml)
 [![HelpDesk Pro](https://github.com/JuanMBF/Portfolio/actions/workflows/helpdesk-pro.yml/badge.svg)](https://github.com/JuanMBF/Portfolio/actions/workflows/helpdesk-pro.yml)
 [![Mongo Replica Lab](https://github.com/JuanMBF/Portfolio/actions/workflows/mongo-replica-lab.yml/badge.svg)](https://github.com/JuanMBF/Portfolio/actions/workflows/mongo-replica-lab.yml)
 [![IT Support Toolkit](https://github.com/JuanMBF/Portfolio/actions/workflows/it-support-toolkit.yml/badge.svg)](https://github.com/JuanMBF/Portfolio/actions/workflows/it-support-toolkit.yml)
@@ -17,7 +20,21 @@ Caballito, CABA · Modalidad presencial, híbrida o remota · [juanmbarrosf@gmai
 
 ---
 
-## Proyectos
+## Proyecto principal: [InflationArg](https://github.com/JuanMBF/InflationArg)
+
+**¿Le ganaron los salarios a la inflación en Argentina? (2016–2026)** · [Sitio y dashboard en vivo](https://juanmbf.github.io/InflationArg/)
+
+[![InflationArg](sitio/img/inflationarg.webp)](https://juanmbf.github.io/InflationArg/)
+
+**No.** Con datos oficiales (INDEC, BCRA, ANSES) a julio de 2026, el salario real promedio quedó 21,8 % por debajo de diciembre de 2016, y el del sector público, 34,3 %.
+
+- **Pipeline en Python** que corre de punta a punta con un comando y sin internet: descarga verificada con sha256, base SQLite, Excel, modelo para Power BI y sitio web.
+- **SQL:** modelo estrella, vistas con CTEs y window functions (`LAG`, `RANK`, acumulados) y una consulta comentada por pregunta de negocio.
+- **QA de datos:** 11 chequeos automáticos que encontraron anomalías reales en las fuentes oficiales (series vacías en la API, un valor repetido del RIPTE, valores fechados a futuro).
+- **Para RR.HH.:** calculadora de ajuste salarial, con la misma lógica en Python y JavaScript probada con los mismos casos.
+- **Calidad:** pytest con 99 % de cobertura, validación HTML y auditoría de accesibilidad con Playwright + axe en CI.
+
+## Otros proyectos en este repositorio
 
 Tres proyectos alrededor del trabajo de soporte IT: **diagnosticar** el problema en el equipo del usuario, **gestionarlo** como ticket con tiempos de respuesta y **mantener disponible** la infraestructura de datos. El toolkit y HelpDesk Pro están integrados:
 
@@ -84,13 +101,23 @@ Diagnóstico
 
 | Área | Tecnologías |
 |---|---|
-| Lenguajes | Java · JavaScript · Python · SQL |
+| Datos | SQL (CTEs, window functions) · Python · pandas · Excel avanzado (tablas dinámicas, macros) · QA de datos |
+| Lenguajes | Python · SQL · JavaScript · Java |
 | Backend | Spring Boot · Spring Security · JPA/Hibernate · FastAPI · SQLAlchemy · API REST · JWT |
 | Frontend | React · Vite · HTML · CSS |
-| Bases de datos | MySQL · MongoDB (replica sets) · SQLite · H2 |
+| Bases de datos | MySQL · SQLite · MongoDB (replica sets) · modelo estrella · H2 |
 | Testing | JUnit 5 · MockMvc · Vitest · Testing Library · pytest |
 | DevOps | Docker · Docker Compose · GitHub Actions · nginx · Git |
 | Soporte IT | Diagnóstico de redes (DNS, TCP, HTTP) · relevamiento de equipos · gestión de incidencias y SLA |
+
+## Sitio del portfolio
+
+La carpeta [`sitio/`](sitio) es el sitio publicado en [juanmbf.github.io/Portfolio](https://juanmbf.github.io/Portfolio/): HTML y CSS hechos a mano, modo claro y oscuro, sin cookies ni rastreadores. En cada cambio, [`sitio.yml`](.github/workflows/sitio.yml) valida el HTML y corre una auditoría de accesibilidad con Playwright + axe en 375, 768 y 1280 px (claro y oscuro) antes de publicarlo en la rama `gh-pages`.
+
+```bash
+cd sitio-tests && npm ci && npx playwright install chromium
+npm run validar-html && npm run qa
+```
 
 ## Correr los proyectos
 
