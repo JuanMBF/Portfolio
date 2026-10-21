@@ -1,0 +1,61 @@
+name: Sitio
+
+# Valida el sitio del portfolio (HTML + Playwright y axe) y, en la rama principal,
+# lo publica en gh-pages: https://juanmbf.github.io/Portfolio/
+on:
+  push:
+    paths: ["sitio/**", "sitio-tests/**", ".github/workflows/sitio.yml"]
+  pull_request:
+    paths: ["sitio/**", "sitio-tests/**", ".github/workflows/sitio.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sitio-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  qa:
+    name: HTML y accesibilidad (375/768/1280, claro y oscuro)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: sitio-tests
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: sitio-tests/package-lock.json
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run validar-html
+      - run: npm run capturas
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: capturas-sitio
+          path: sitio-tests/capturas
+          retention-days: 14
+
+  publicar:
+    name: Publicar en gh-pages
+    needs: qa
+    if: github.event_name != 'pull_request' && github.ref_name == github.event.repository.default_branch
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Publicar sitio/ en la rama gh-pages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd sitio
+          git init -q -b gh-pages
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -q -m "Sitio publicado desde ${GITHUB_SHA::7}"
+          git push -q -f "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" gh-pages
