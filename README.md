@@ -101,7 +101,7 @@ Diagnóstico
 
 | Área | Tecnologías |
 |---|---|
-| Datos | SQL (CTEs, window functions) · Python · pandas · Excel avanzado · QA de datos |
+| Datos | SQL (CTEs, window functions) · Python · pandas · Excel avanzado (tablas dinámicas, macros) · QA de datos |
 | Lenguajes | Python · SQL · JavaScript · Java |
 | Backend | Spring Boot · Spring Security · JPA/Hibernate · FastAPI · SQLAlchemy · API REST · JWT |
 | Frontend | React · Vite · HTML · CSS |
